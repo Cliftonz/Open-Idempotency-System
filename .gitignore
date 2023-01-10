@@ -105,4 +105,4 @@ Cargo.lock
 *.pdb
 
 # End of https://www.toptal.com/developers/gitignore/api/jetbrains+iml,rust
-
+.env

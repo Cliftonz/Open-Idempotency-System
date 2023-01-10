@@ -1,8 +1,6 @@
 # Open-Idempotency-System
 Main repository for the Open-Idempotency System 
 
-
-
 ## Setup
 
 ### Windows
@@ -27,7 +25,11 @@ apt install -y protobuf-compiler build-essential libssl-dev gcc g++  gdb ninja-b
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ```
 
+## Serverless deployments
 
+Currently, are working the actual package and architecture.
+We have set up the starting points of serverless deployments under the serverless directory.
+This is may get moved to its own repository in the future.
 
 ## Common Errors
 
