@@ -8,6 +8,20 @@ use tokio::sync::Mutex;
 use std::sync::{Arc};
 use database::IDatabase;
 use redis_driver::RedisClient;
+use crate::databases::cassandra::CassandraClient;
+use crate::databases::database::{DatabaseOption, DbConfig};
+use crate::databases::dynamodb::DynamodbClient;
+use tokio::runtime::Runtime;
+
+fn get_config() -> DbConfig{
+     DbConfig {
+        url:  String::from("redis://default:redispw@localhost:49153"),
+        table_name: None,
+        keyspace: None,
+        ttl: None,
+         database_option: DatabaseOption::Redis
+    }
+}
 
 pub fn create_database_mutex_sync() -> Arc<Mutex<Box<dyn IDatabase + Send>>> {
     let v = Runtime::new().unwrap().block_on(create_database_mutex());
@@ -25,7 +39,7 @@ pub async fn create_database() -> Box<dyn IDatabase + Send> {
             RedisClient::new(config.clone()).await
         },
         DatabaseOption::Cassandra => {
-            CassandraClient::new(config.clone())
+            CassandraClient::new(config.clone()).await
         },
         DatabaseOption::Dynamo => {
             DynamodbClient::new(config.clone()).await
