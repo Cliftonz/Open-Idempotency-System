@@ -1,7 +1,5 @@
-#[macro_use]
 extern crate lazy_static;
-use tokio::sync::Mutex;
-use std::sync::{Arc};
+
 use std::fmt::Debug;
 use std::pin::Pin;
 use std::time::Duration;
@@ -11,25 +9,20 @@ use log4rs::config::{Appender, Root};
 use log4rs::Config;
 use tokio_stream::{Stream, StreamExt};
 use tonic::{transport::Server, Request, Response, Status, Streaming};
-use tonic::metadata::{KeyAndValueRef, MetadataValue};
-use tonic_health::server::HealthReporter;
+use tonic::metadata::MetadataValue;
 use tonic_reflection::server::Builder;
 use tokio::sync::mpsc;
 
 use open_idempotency::{
     open_idempotency_server::{OpenIdempotency, OpenIdempotencyServer } ,
-    ApiConfig, IdempotencyId,
-    IdempotencyData, IdempotencyStructure,
-    IdempotencyRequest , Status as GRPCStatus
+    ApiConfig, IdempotencyStructure,
+    IdempotencyRequest
 };
-mod databases;
+pub(crate) mod databases;
 mod proto_bridge;
 
-use databases::database::IDatabase;
-use prost_types::Timestamp as grpcTimestamp;
-use prost_types::Duration as grpcDuration;
 use crate::databases::database::{IdempotencyTransaction, MessageStatusDef};
-use crate::open_idempotency::{IdempotencyDataSaveRequest, MessageStatus};
+use crate::open_idempotency::{IdempotencyDataSaveRequest};
 
 
 // lazy_static! {

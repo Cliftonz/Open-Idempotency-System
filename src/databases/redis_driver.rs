@@ -1,19 +1,17 @@
 extern crate redis;
+
 use async_trait::async_trait;
 use std::time::Duration;
 use redis::{Client, AsyncCommands};
-use crate::databases::database::{IDatabase, DbConfig, combine_key, IdempotencyTransaction};
+use crate::databases::database::{IDatabase, combine_key, IdempotencyTransaction};
 use std::convert::TryFrom;
 use std::error::Error;
+use crate::databases::config::IConfig;
 
 pub struct RedisClient{
     client: Client,
     con: redis::aio::Connection,
-    config: DbConfig
-}
-
-unsafe impl Send for RedisClient {
-
+    config: Box<dyn IConfig>
 }
 
 #[async_trait]
@@ -48,7 +46,7 @@ impl IDatabase for RedisClient {
 }
 
 impl RedisClient {
-    pub async fn new (config: DbConfig) -> Box<dyn IDatabase + Send> {
+    pub async fn new (config: Box<dyn IConfig>) -> Box<dyn IDatabase + Send> {
         let client = Client::open(config.url.clone()).unwrap();
         let con =  client.get_async_connection().await.unwrap();
         let r = RedisClient {
@@ -63,7 +61,7 @@ impl RedisClient {
 
 #[cfg(test)]
 mod tests {
-    use crate::databases::database::{DatabaseOption, MessageStatusDef};
+    use crate::databases::database::{ MessageStatusDef};
     use super::*;
 
     async fn init_client() -> Box<dyn IDatabase> {

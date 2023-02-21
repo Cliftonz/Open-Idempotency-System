@@ -4,22 +4,6 @@ use async_trait::async_trait;
 use serde::{Serialize, Deserialize};
 use crate::open_idempotency::MessageStatus;
 
-#[derive(Clone)]
-pub struct DbConfig {
-    pub url: String,
-    pub table_name: Option<String>,
-    pub keyspace: Option<String>,
-    pub ttl: Option<Duration>,
-    pub database_option: DatabaseOption
-}
-
-#[derive(Clone)]
-pub enum DatabaseOption {
-    Redis,
-    Dynamo,
-    Cassandra
-}
-
 #[async_trait]
 pub trait IDatabase {
     async fn exists(&mut self, key: String, app_id: String) -> Result<IdempotencyTransaction, Box<dyn Error + Send + Sync>>;
@@ -86,5 +70,3 @@ pub fn combine_key(key: String, app_id: String) -> String {
     full_key.push_str(&key[..]);
     full_key
 }
-
-// async fn new (config: DbConfig) -> Box<dyn IDatabase>;
